@@ -1,27 +1,39 @@
 version '0.1'
 
-apply plugin: 'war'
-apply plugin: 'java'
-apply plugin: 'org.junit.platform.gradle.plugin'
-
-sourceCompatibility = 1.8
-
 buildscript {
     repositories {
         mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
     dependencies {
         classpath 'org.junit.platform:junit-platform-gradle-plugin:1.1.0'
+        classpath "com.moowork.gradle:gradle-node-plugin:1.2.0"
     }
 }
 
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'org.junit.platform.gradle.plugin'
+apply plugin: 'com.moowork.node'
+
+sourceCompatibility = 1.8
+
+war {
+    archiveName = 'ble6lowpancontroller.war'
+}
+
 repositories {
+    jcenter()
     mavenCentral()
 }
 
 dependencies {
     compile group: 'org.jboss.resteasy', name: 'resteasy-jaxrs', version: '3.0.19.Final'
-    compile group: 'org.jboss.resteasy', name: 'resteasy-jackson-provider', version: '2.3.2.Final'
+    compile group: 'org.jboss.resteasy', name: 'resteasy-jackson-provider', version: '3.0.19.Final'
+
+    compile fileTree(dir: 'libs', include: ['*.jar'])
 
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
 
@@ -34,3 +46,16 @@ dependencies {
     testRuntime("org.junit.jupiter:junit-jupiter-engine:5.0.2")
     testRuntime("org.junit.vintage:junit-vintage-engine:4.12.2")
 }
+
+task buildWeb(type: NodeTask) {
+    script = file('src/main/js/build/build.js')
+}
+
+task prepareWebapp(type: Sync) {
+    into "$projectDir/src/main/webapp"
+    from "$projectDir/web/dist"
+}
+
+prepareWebapp.dependsOn(buildWeb)
+
+war.dependsOn(prepareWebapp)

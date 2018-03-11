@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/jble6lowpancontroller.iml" filepath="$PROJECT_DIR$/.idea/jble6lowpancontroller.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/jble6lowpancontroller_main.iml" filepath="$PROJECT_DIR$/.idea/modules/jble6lowpancontroller_main.iml" group="jble6lowpancontroller" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/jble6lowpancontroller_test.iml" filepath="$PROJECT_DIR$/.idea/modules/jble6lowpancontroller_test.iml" group="jble6lowpancontroller" />
+    </modules>
+  </component>
+</project>
