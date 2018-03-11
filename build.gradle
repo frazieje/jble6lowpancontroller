@@ -47,14 +47,22 @@ dependencies {
     testRuntime("org.junit.vintage:junit-vintage-engine:4.12.2")
 }
 
+task cleanWeb(type: Delete) {
+    delete "src/main/webapp"
+}
+
+clean.dependsOn(cleanWeb)
+
 task buildWeb(type: NodeTask) {
-    script = file('src/main/js/build/build.js')
+    script = file('web/build/build.js')
 }
 
 task prepareWebapp(type: Sync) {
     into "$projectDir/src/main/webapp"
     from "$projectDir/web/dist"
 }
+
+buildWeb.dependsOn(npmInstall)
 
 prepareWebapp.dependsOn(buildWeb)
 
