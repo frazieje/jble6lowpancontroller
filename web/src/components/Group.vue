@@ -5,12 +5,12 @@
 </template>
 
 <script>
-  export default {
-    name: 'Group',
-    data: () => {
-      return {
-        msg: 'Group Settings'
-      }
+export default {
+  name: 'Group',
+  data: () => {
+    return {
+      msg: 'Group Settings'
     }
   }
+}
 </script>

@@ -5,12 +5,12 @@
 </template>
 
 <script>
-  export default {
-    name: 'Wifi',
-    data: () => {
-      return {
-        msg: 'Wifi Settings'
-      }
+export default {
+  name: 'Wifi',
+  data: () => {
+    return {
+      msg: 'Wifi Settings'
     }
   }
+}
 </script>

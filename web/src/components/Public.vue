@@ -5,12 +5,12 @@
 </template>
 
 <script>
-  export default {
-    name: 'Public',
-    data: () => {
-      return {
-        msg: 'Public Settings'
-      }
+export default {
+  name: 'Public',
+  data: () => {
+    return {
+      msg: 'Public Settings'
     }
   }
+}
 </script>
