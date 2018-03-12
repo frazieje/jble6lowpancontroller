@@ -47,22 +47,35 @@ dependencies {
     testRuntime("org.junit.vintage:junit-vintage-engine:4.12.2")
 }
 
+task testWeb(type: NpmTask) {
+    workingDir = file('web')
+    args = ['run', 'test']
+}
+
 task cleanWeb(type: Delete) {
     delete "src/main/webapp"
 }
 
 clean.dependsOn(cleanWeb)
 
+task installWeb(type: NpmTask) {
+    workingDir = file('web')
+    args = ['install']
+}
+
 task buildWeb(type: NodeTask) {
     script = file('web/build/build.js')
+}
+
+task devWeb(type: NpmTask) {
+    workingDir = file('web')
+    args = ['run', 'dev']
 }
 
 task prepareWebapp(type: Sync) {
     into "$projectDir/src/main/webapp"
     from "$projectDir/web/dist"
 }
-
-buildWeb.dependsOn(npmInstall)
 
 prepareWebapp.dependsOn(buildWeb)
 
