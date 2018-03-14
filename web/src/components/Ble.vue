@@ -1,25 +1,14 @@
 <template>
   <div id="ble">
     <md-list class="md-double-line">
-      <md-list-item>
-        <md-icon class="md-primary">bluetooth_connected</md-icon>
+      <md-list-item v-for="device in summary" :key="device.address">
+
+        <md-icon v-if="device.status === 'connected'" class="md-primary">bluetooth_connected</md-icon>
+        <md-icon v-if="device.status === 'available'" class="md-secondary">bluetooth_searching</md-icon>
 
         <div class="md-list-item-text">
-          <span>Door Lock</span>
-          <span>00:AA:BB:CC:DD:EE</span>
-        </div>
-
-        <md-button class="md-icon-button md-list-action">
-          <md-icon>more_horiz</md-icon>
-        </md-button>
-      </md-list-item>
-
-      <md-list-item class="md-double-line">
-        <md-icon class="md-secondary">bluetooth_searching</md-icon>
-
-        <div class="md-list-item-text">
-          <span>Unknown</span>
-          <span>00:A2:FF:CC:D4:E7</span>
+          <span>{{ device.name }}</span>
+          <span>{{ device.address }}</span>
         </div>
 
         <md-button class="md-icon-button md-list-action">
@@ -31,11 +20,45 @@
 </template>
 
 <script>
+
+const apiURL = process.env.API_BASE_URL
+
 export default {
   name: 'Ble',
   data: () => {
     return {
-      msg: 'Bluetooth'
+      msg: 'Bluetooth',
+      summary: []
+    }
+  },
+  created: function () {
+    this.fetchData()
+  },
+  methods: {
+    fetchData: function () {
+      const xhr = new XMLHttpRequest()
+      const self = this
+      xhr.open('GET', apiURL + '/status')
+      xhr.onload = function () {
+        const all = JSON.parse(xhr.responseText)
+        const summaryData = []
+        for (let device of all.connectedDevices) {
+          summaryData.push({
+            address: device,
+            name: 'Unknown',
+            status: 'connected'
+          })
+        }
+        for (let scan of all.availableDevices) {
+          summaryData.push({
+            address: scan,
+            name: 'Unknown',
+            status: 'available'
+          })
+        }
+        self.summary = summaryData
+      }
+      xhr.send()
     }
   }
 }
@@ -48,5 +71,11 @@ export default {
     display: inline-block;
     vertical-align: top;
     border: 1px solid rgba(#000, .12);
+  }
+  .md-list-item {
+    border-bottom: 1px solid #cccccc;
+  }
+  .md-list-item:last-child {
+    border-bottom: none;
   }
 </style>
