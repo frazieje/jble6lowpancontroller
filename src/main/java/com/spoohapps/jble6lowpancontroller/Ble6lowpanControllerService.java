@@ -4,6 +4,7 @@ import com.spoohapps.jble6lowpancontroller.controllers.StatusController;
 
 import com.spoohapps.jble6lowpand.controller.Ble6LowpanController;
 import com.spoohapps.jble6lowpand.controller.Ble6LowpanControllerService;
+import org.jboss.resteasy.plugins.interceptors.CorsFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,6 +15,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import static com.spoohapps.jble6lowpand.controller.RemoteBle6LowpanControllerService.ControllerName;
@@ -21,13 +23,21 @@ import static com.spoohapps.jble6lowpand.controller.RemoteBle6LowpanControllerSe
 @ApplicationPath("/api")
 public class Ble6lowpanControllerService extends Application {
 
-    private Set<Object> singletons = new HashSet<Object>();
+    private Set<Object> singletons;
 
     private Ble6LowpanController ble6lowpanController;
 
     private static final Logger logger = LoggerFactory.getLogger(Ble6LowpanControllerService.class);
 
     public Ble6lowpanControllerService() {
+
+        singletons = new LinkedHashSet<>();
+
+        CorsFilter corsFilter = new CorsFilter();
+        corsFilter.getAllowedOrigins().add("*");
+
+        singletons.add(corsFilter);
+
         try {
             Registry registry = LocateRegistry.getRegistry(null);
             ble6lowpanController = (Ble6LowpanController) registry.lookup(ControllerName);
