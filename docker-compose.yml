@@ -1,0 +1,53 @@
+version: "3"
+services:
+  web:
+    build: .
+    ports:
+    - 80:8080
+    links:
+    - scanner:scanner
+    restart: always
+  devicecontrol:
+    image: www.spoohapps.com/devicecontrol
+    ports:
+    - 8080:8080
+    links:
+    - rabbitmq:rabbitmq
+    volumes:
+    - ./conf/devicecontrol.conf:/app/devicecontrol/devicecontrol.conf
+    - ./conf/rabbitmq/client:/root/devicecontrol
+    restart: always
+  shovel:
+    image: www.spoohapps.com/jble6lowpanshoveld
+    ports:
+    - 8081:8081
+    links:
+    - rabbitmq:rabbitmq
+    volumes:
+    - ./conf/jble6lowpanshoveld/jble6lowpanshoveld.conf:/app/jble6lowpanshoveld/jble6lowpanshoveld.conf
+    - ./conf/jble6lowpanshoveld/profile.conf:/root/jble6lowpanshoveld/profile.conf
+    - ./conf/rabbitmq/client/cacert.pem:/root/jble6lowpanshoveld/client/cacert.pem
+    - ./conf/rabbitmq/client/cert.pem:/root/jble6lowpanshoveld/client/cert.pem
+    - ./conf/rabbitmq/client/key.pem:/root/jble6lowpanshoveld/client/key8.pem
+    restart: always
+  rabbitmq:
+    image: www.spoohapps.com/rabbitmq
+    ports:
+    - 15672:15672
+    - 5671:5671
+    volumes:
+    - ./conf/rabbitmq/rabbitmq.config:/etc/rabbitmq/rabbitmq.config
+    - ./conf/rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins
+    - ./conf/rabbitmq/server/cacert.pem:/etc/rabbitmq/cacert.pem
+    - ./conf/rabbitmq/server/cert.pem:/etc/rabbitmq/cert.pem
+    - ./conf/rabbitmq/server/key.pem:/etc/rabbitmq/key.pem
+    restart: always
+  scanner:
+    image: www.spoohapps.com/jble6lowpand
+    volumes:
+    - ./conf/jble6lowpand/jble6lowpand.conf:/opt/jble6lowpand/jble6lowpand.conf
+    - ./conf/jble6lowpand/data:/opt/jble6lowpand/data
+    - /sys/kernel/debug/bluetooth/6lowpan_control:/opt/jble6lowpand/bin/6lowpan_control
+    network_mode: host
+    privileged: true
+    restart: always

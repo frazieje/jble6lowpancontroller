@@ -1,58 +1,83 @@
 package com.spoohapps.jble6lowpancontroller;
 
-import com.spoohapps.jble6lowpancontroller.controllers.StatusController;
-
-import com.spoohapps.jble6lowpand.controller.Ble6LowpanController;
-import com.spoohapps.jble6lowpand.controller.Ble6LowpanControllerService;
-import org.jboss.resteasy.plugins.interceptors.CorsFilter;
+import org.glassfish.grizzly.http.server.HttpServer;
+import org.glassfish.grizzly.http.server.StaticHttpHandler;
+import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import javax.ws.rs.core.UriBuilder;
+import java.io.IOException;
+import java.net.URI;
 
-import static com.spoohapps.jble6lowpand.controller.RemoteBle6LowpanControllerService.ControllerName;
-
-@ApplicationPath("/api")
 public class Ble6lowpanControllerService extends Application {
 
-    private Set<Object> singletons;
+    private final HttpServer httpServer;
 
-    private Ble6LowpanController ble6lowpanController;
+    private static final Logger logger = LoggerFactory.getLogger(Ble6lowpanControllerService.class);
 
-    private static final Logger logger = LoggerFactory.getLogger(Ble6LowpanControllerService.class);
+    private static final int defaultPort = 8080;
+    private static final String defaultPath = "/opt/jble6lowpancontroller/web/";
 
-    public Ble6lowpanControllerService() {
+    public Ble6lowpanControllerService(int port, String path) {
 
-        singletons = new LinkedHashSet<>();
+        URI baseUri = UriBuilder.fromPath("/").host("0.0.0.0").port(port).build();
 
-        CorsFilter corsFilter = new CorsFilter();
-        corsFilter.getAllowedOrigins().add("*");
+        httpServer = GrizzlyHttpServerFactory.createHttpServer(baseUri);
 
-        singletons.add(corsFilter);
+        StaticHttpHandler handler = new StaticHttpHandler(path);
+        httpServer.getServerConfiguration().addHttpHandler(handler);
+    }
 
+    private void start() {
+        logger.info("Starting HTTP Server...");
         try {
-            Registry registry = LocateRegistry.getRegistry(null);
-            ble6lowpanController = (Ble6LowpanController) registry.lookup(ControllerName);
-        } catch (RemoteException | NotBoundException re) {
-//            logger.error("jble6lowpand not found via rmi defaulting to no-op controller");
-//            ble6lowpanController = new NoopBle6LowpanController();
-            logger.info("using a fake ble6lowpan controller");
-            ble6lowpanController = new FakeBle6LowpanController();
+            httpServer.start();
+            logger.info("HTTP Server Started...");
+        } catch (IOException e) {
+            logger.error("Error starting HTTP Server", e);
         }
-        singletons.add(new StatusController(ble6lowpanController));
     }
 
-    @Override
-    public Set<Object> getSingletons() {
-        return singletons;
+    private void stop() {
+        logger.info("Stopping HTTP Server...");
+        httpServer.shutdownNow();
+        logger.info("HTTP Server Stopped.");
     }
 
+
+    public static void main(String[] args) {
+
+        int port = defaultPort;
+
+        String path = defaultPath;
+
+        for (int i = 0; i < args.length; i++) {
+            if (args[i].matches("^-[cCpP]$")) {
+                String arg = args[i].replaceAll("-", "").toLowerCase();
+                if (arg.equals("c")) {
+                    path = args[i+1];
+                    i++;
+                } else if (arg.equals("p")) {
+                    try {
+                        port = Integer.parseInt(args[i+1]);
+                        i++;
+                    } catch (NumberFormatException nfe) {
+                        logger.error(nfe.getMessage());
+                    }
+                }
+            }
+        }
+
+        logger.info("HTTP Server Port: {}", port);
+        logger.info("Static File Location: {}", path);
+
+        Ble6lowpanControllerService service = new Ble6lowpanControllerService(port, path);
+
+        service.start();
+
+        Runtime.getRuntime().addShutdownHook(new Thread(service::stop));
+
+    }
 }

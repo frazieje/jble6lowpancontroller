@@ -4,7 +4,7 @@ import Home from '@/components/Home'
 import Ble from '@/components/Ble'
 import Wifi from '@/components/Wifi'
 import Group from '@/components/Group'
-import Public from '@/components/Public'
+import Remote from '@/components/Remote'
 
 Vue.use(Router)
 
@@ -31,9 +31,9 @@ export default new Router({
       component: Group
     },
     {
-      path: '/public',
-      name: 'Public',
-      component: Public
+      path: '/remote',
+      name: 'Remote',
+      component: Remote
     }
   ]
 })

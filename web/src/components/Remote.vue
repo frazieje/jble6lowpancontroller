@@ -6,10 +6,10 @@
 
 <script>
 export default {
-  name: 'Public',
+  name: 'Remote',
   data: () => {
     return {
-      msg: 'Public Settings'
+      msg: 'Remote Settings'
     }
   }
 }

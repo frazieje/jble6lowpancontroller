@@ -4,7 +4,7 @@
       <md-list-item v-for="device in summary" :key="device.address">
 
         <md-icon v-if="device.status === 'connected'" class="md-primary">bluetooth_connected</md-icon>
-        <md-icon v-if="device.status === 'available'" class="md-secondary">bluetooth_searching</md-icon>
+        <md-icon v-else class="md-secondary">bluetooth_searching</md-icon>
 
         <div class="md-list-item-text">
           <span>{{ device.name }}</span>
@@ -44,15 +44,15 @@ export default {
         const summaryData = []
         for (let device of all.connectedDevices) {
           summaryData.push({
-            address: device,
-            name: 'Unknown',
+            address: device.address,
+            name: device.name ? device.name : 'Unknown',
             status: 'connected'
           })
         }
         for (let scan of all.availableDevices) {
           summaryData.push({
-            address: scan,
-            name: 'Unknown',
+            address: scan.address,
+            name: scan.name ? scan.name : 'Unknown',
             status: 'available'
           })
         }
