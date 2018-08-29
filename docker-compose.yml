@@ -19,7 +19,7 @@ services:
     - scanner:scanner
     restart: always
   devicecontrol:
-    image: www.spoohapps.com/devicecontrol
+    image: www.spoohapps.com/devicecontrol-rpi
     ports:
     - 8080:8080
     depends_on:
@@ -27,13 +27,13 @@ services:
     links:
     - rabbitmq:rabbitmq
     volumes:
-    - ./conf/devicecontrol.conf:/app/devicecontrol/devicecontrol.conf
+    - ./conf/devicecontrol/devicecontrol.conf:/app/devicecontrol/devicecontrol.conf
     - ./conf/rabbitmq/client:/root/devicecontrol
     restart: always
   shovel:
-    image: www.spoohapps.com/jble6lowpanshoveld
+    image: www.spoohapps.com/jble6lowpanshoveld-rpi
     ports:
-    - 8081:8081
+    - 8081:8080
     depends_on:
     - rabbitmq
     links:
@@ -41,12 +41,9 @@ services:
     volumes:
     - ./conf/jble6lowpanshoveld/jble6lowpanshoveld.conf:/app/jble6lowpanshoveld/jble6lowpanshoveld.conf
     - ./conf/jble6lowpanshoveld/profile.conf:/root/jble6lowpanshoveld/profile.conf
-    - ./conf/rabbitmq/client/cacert.pem:/root/jble6lowpanshoveld/client/cacert.pem
-    - ./conf/rabbitmq/client/cert.pem:/root/jble6lowpanshoveld/client/cert.pem
-    - ./conf/rabbitmq/client/key.pem:/root/jble6lowpanshoveld/client/key8.pem
     restart: always
   rabbitmq:
-    image: www.spoohapps.com/rabbitmq
+    image: www.spoohapps.com/rabbitmq-rpi
     ports:
     - 15672:15672
     - 5671:5671
