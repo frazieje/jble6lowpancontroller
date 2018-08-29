@@ -2,18 +2,13 @@ apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'application'
 apply plugin: 'org.junit.platform.gradle.plugin'
-apply plugin: 'com.moowork.node'
 
 buildscript {
     repositories {
         mavenCentral()
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
     }
     dependencies {
         classpath 'org.junit.platform:junit-platform-gradle-plugin:1.1.0'
-        classpath "com.moowork.gradle:gradle-node-plugin:1.2.0"
     }
 }
 
@@ -26,16 +21,6 @@ repositories {
     mavenCentral()
     maven {
         url "https://www.spoohapps.com/artifactory/libs-release-local"
-    }
-}
-
-distributions {
-    main {
-        contents {
-            from ('web/dist') {
-                into 'web'
-            }
-        }
     }
 }
 
@@ -59,26 +44,3 @@ dependencies {
     testRuntime("org.junit.jupiter:junit-jupiter-engine:5.0.2")
     testRuntime("org.junit.vintage:junit-vintage-engine:4.12.2")
 }
-
-task testWeb(type: NpmTask) {
-    workingDir = file('web')
-    args = ['run', 'test']
-}
-
-task installWeb(type: NpmTask) {
-    workingDir = file('web')
-    args = ['install']
-}
-
-task buildWeb(type: NodeTask) {
-    script = file('web/build/build.js')
-}
-
-task devWeb(type: NpmTask) {
-    workingDir = file('web')
-    args = ['run', 'dev']
-}
-
-buildWeb.dependsOn(installWeb)
-
-jar.dependsOn(buildWeb)

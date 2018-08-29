@@ -9,7 +9,7 @@ module.exports = {
 
     // Paths
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/ble6lowpancontroller/',
+    assetsPublicPath: '/',
     proxyTable: {},
 
     // Various Dev Server settings

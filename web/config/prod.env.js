@@ -1,5 +1,5 @@
 'use strict'
 module.exports = {
   NODE_ENV: '"production"',
-  API_BASE_URL: "'http://localhost:8080/ble6lowpancontroller/api'"
+  API_BASE_URL: "'http://scanner:8089'"
 }

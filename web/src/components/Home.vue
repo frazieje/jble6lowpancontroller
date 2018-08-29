@@ -31,6 +31,7 @@ export default {
   },
   mounted () {
     this.$nextTick(function () {
+      let graph = document.getElementById('graph')
       this.gwidth = graph.clientWidth
       this.gheight = graph.clientWidth
     })
@@ -40,6 +41,7 @@ export default {
     }.bind(this), 5000)
   },
   updated () {
+    let graph = document.getElementById('graph')
     this.gwidth = graph.clientWidth
     this.gheight = graph.clientWidth
   },
@@ -83,7 +85,7 @@ export default {
     fetchData: function () {
       const xhr = new XMLHttpRequest()
       const self = this
-      xhr.open('GET', apiURL + '/status')
+      xhr.open('GET', apiURL)
       xhr.onload = function () {
         const status = JSON.parse(xhr.responseText)
         let connected = status.connectedDevices.length

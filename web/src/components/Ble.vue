@@ -38,7 +38,7 @@ export default {
     fetchData: function () {
       const xhr = new XMLHttpRequest()
       const self = this
-      xhr.open('GET', apiURL + '/status')
+      xhr.open('GET', apiURL)
       xhr.onload = function () {
         const all = JSON.parse(xhr.responseText)
         const summaryData = []
