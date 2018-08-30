@@ -6,9 +6,6 @@ services:
       - 80:8080
     depends_on:
       - scanner
-    networks:
-      - frontend
-      - backend
     restart: always
   devicecontrol:
     image: www.spoohapps.com/devicecontrol-rpi
@@ -17,11 +14,8 @@ services:
     depends_on:
       - rabbitmq
     volumes:
-      - ./conf/devicecontrol/devicecontrol.conf:/app/devicecontrol/devicecontrol.conf
+      - ./conf/devicecontrol/devicecontrol.conf:/opt/devicecontrol/devicecontrol.conf
       - ./conf/rabbitmq/client:/root/devicecontrol
-    networks:
-      - frontend
-      - backend
     restart: always
   scanner:
     image: www.spoohapps.com/jble6lowpand
@@ -30,8 +24,6 @@ services:
     - ./conf/jble6lowpand/data:/opt/jble6lowpand/data
     - /sys/kernel/debug/bluetooth/6lowpan_control:/opt/jble6lowpand/bin/6lowpan_control
     network_mode: host
-    networks:
-      - backend
     privileged: true
     restart: always
   shovel:
@@ -41,10 +33,8 @@ services:
     depends_on:
       - rabbitmq
     volumes:
-      - ./conf/jble6lowpanshoveld/jble6lowpanshoveld.conf:/app/jble6lowpanshoveld/jble6lowpanshoveld.conf
+      - ./conf/jble6lowpanshoveld/jble6lowpanshoveld.conf:/opt/jble6lowpanshoveld/jble6lowpanshoveld.conf
       - ./conf/jble6lowpanshoveld/profile.conf:/root/jble6lowpanshoveld/profile.conf
-    networks:
-      - backend
     restart: always
   rabbitmq:
     image: www.spoohapps.com/rabbitmq-rpi
@@ -57,10 +47,4 @@ services:
       - ./conf/rabbitmq/server/cacert.pem:/etc/rabbitmq/cacert.pem
       - ./conf/rabbitmq/server/cert.pem:/etc/rabbitmq/cert.pem
       - ./conf/rabbitmq/server/key.pem:/etc/rabbitmq/key.pem
-    networks:
-      - backend
     restart: always
-
-  networks:
-    frontend:
-    backend:
