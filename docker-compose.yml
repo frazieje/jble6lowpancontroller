@@ -1,5 +1,28 @@
 version: "3"
 services:
+  web:
+    build: .
+    ports:
+      - 80:8080
+    depends_on:
+      - scanner
+    networks:
+      - frontend
+      - backend
+    restart: always
+  devicecontrol:
+    image: www.spoohapps.com/devicecontrol-rpi
+    ports:
+      - 8080:8080
+    depends_on:
+      - rabbitmq
+    volumes:
+      - ./conf/devicecontrol/devicecontrol.conf:/app/devicecontrol/devicecontrol.conf
+      - ./conf/rabbitmq/client:/root/devicecontrol
+    networks:
+      - frontend
+      - backend
+    restart: always
   scanner:
     image: www.spoohapps.com/jble6lowpand
     volumes:
@@ -7,50 +30,37 @@ services:
     - ./conf/jble6lowpand/data:/opt/jble6lowpand/data
     - /sys/kernel/debug/bluetooth/6lowpan_control:/opt/jble6lowpand/bin/6lowpan_control
     network_mode: host
+    networks:
+      - backend
     privileged: true
-    restart: always
-  web:
-    build: .
-    ports:
-    - 80:8080
-    depends_on:
-    - scanner
-    links:
-    - scanner:scanner
-    restart: always
-  devicecontrol:
-    image: www.spoohapps.com/devicecontrol-rpi
-    ports:
-    - 8080:8080
-    depends_on:
-    - rabbitmq
-    links:
-    - rabbitmq:rabbitmq
-    volumes:
-    - ./conf/devicecontrol/devicecontrol.conf:/app/devicecontrol/devicecontrol.conf
-    - ./conf/rabbitmq/client:/root/devicecontrol
     restart: always
   shovel:
     image: www.spoohapps.com/jble6lowpanshoveld-rpi
     ports:
-    - 8081:8080
+      - 8081:8080
     depends_on:
-    - rabbitmq
-    links:
-    - rabbitmq:rabbitmq
+      - rabbitmq
     volumes:
-    - ./conf/jble6lowpanshoveld/jble6lowpanshoveld.conf:/app/jble6lowpanshoveld/jble6lowpanshoveld.conf
-    - ./conf/jble6lowpanshoveld/profile.conf:/root/jble6lowpanshoveld/profile.conf
+      - ./conf/jble6lowpanshoveld/jble6lowpanshoveld.conf:/app/jble6lowpanshoveld/jble6lowpanshoveld.conf
+      - ./conf/jble6lowpanshoveld/profile.conf:/root/jble6lowpanshoveld/profile.conf
+    networks:
+      - backend
     restart: always
   rabbitmq:
     image: www.spoohapps.com/rabbitmq-rpi
     ports:
-    - 15672:15672
-    - 5671:5671
+      - 15672:15672
+      - 5671:5671
     volumes:
-    - ./conf/rabbitmq/rabbitmq.config:/etc/rabbitmq/rabbitmq.config
-    - ./conf/rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins
-    - ./conf/rabbitmq/server/cacert.pem:/etc/rabbitmq/cacert.pem
-    - ./conf/rabbitmq/server/cert.pem:/etc/rabbitmq/cert.pem
-    - ./conf/rabbitmq/server/key.pem:/etc/rabbitmq/key.pem
+      - ./conf/rabbitmq/rabbitmq.config:/etc/rabbitmq/rabbitmq.config
+      - ./conf/rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins
+      - ./conf/rabbitmq/server/cacert.pem:/etc/rabbitmq/cacert.pem
+      - ./conf/rabbitmq/server/cert.pem:/etc/rabbitmq/cert.pem
+      - ./conf/rabbitmq/server/key.pem:/etc/rabbitmq/key.pem
+    networks:
+      - backend
     restart: always
+
+  networks:
+    frontend:
+    backend:
