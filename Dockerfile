@@ -14,8 +14,9 @@ COPY ./web /opt/jble6lowpancontroller
 WORKDIR /opt/jble6lowpancontroller
 
 RUN npm install && \
-    npm rebuild node-sass && \
-    node build/build.js
+    npm rebuild node-sass
+
+RUN node build/build.js
 
 FROM resin/raspberry-pi-openjdk:8-jdk
 
