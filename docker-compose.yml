@@ -41,6 +41,7 @@ services:
     ports:
       - 15672:15672
       - 5671:5671
+      - 1883:1883
     volumes:
       - ./conf/rabbitmq/rabbitmq.config:/etc/rabbitmq/rabbitmq.config
       - ./conf/rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins
