@@ -21,7 +21,9 @@
 
 <script>
 
-const apiURL = process.env.API_BASE_URL
+const apiURL = process.env.USE_DEV_SERVER ?
+     process.env.DEV_SERVER_URL.concat(':').concat(process.env.SCANNER_PORT)
+  :  location.protocol.concat("//").concat(location.hostname).concat(":").concat(process.env.SCANNER_PORT)
 
 export default {
   name: 'Ble',

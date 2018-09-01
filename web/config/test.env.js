@@ -4,5 +4,8 @@ const devEnv = require('./dev.env')
 
 module.exports = merge(devEnv, {
   NODE_ENV: '"testing"',
-  API_BASE_URL: "'http://localhost:8089'"
+  SCANNER_PORT: "8089",
+  SHOVEL_PORT: "8081",
+  USE_DEV_SERVER: "true",
+  DEV_SERVER_URL: "'http:192.168.2.48'"
 })
