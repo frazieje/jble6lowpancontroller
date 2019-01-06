@@ -34,4 +34,4 @@ COPY --from=nodebuilder /opt/jble6lowpancontroller/dist web/
 
 EXPOSE 8080
 
-CMD bin/jble6lowpancontroller -c ~/workspace/jble6lowpancontroller/web/
+CMD bin/jble6lowpancontroller -c /opt/jble6lowpancontroller/web/
