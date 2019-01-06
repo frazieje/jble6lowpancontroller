@@ -18,7 +18,7 @@ public class Ble6lowpanControllerService extends Application {
     private static final Logger logger = LoggerFactory.getLogger(Ble6lowpanControllerService.class);
 
     private static final int defaultPort = 8080;
-    private static final String defaultPath = "/opt/jble6lowpancontroller/web/";
+    private static final String defaultPath = "~/workspace/jble6lowpancontroller/web/";
 
     public Ble6lowpanControllerService(int port, String path) {
 
@@ -69,6 +69,8 @@ public class Ble6lowpanControllerService extends Application {
                 }
             }
         }
+
+        path = path.replaceFirst("^~", System.getProperty("user.home"));
 
         logger.info("HTTP Server Port: {}", port);
         logger.info("Static File Location: {}", path);
