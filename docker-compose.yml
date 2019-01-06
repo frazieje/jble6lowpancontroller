@@ -15,13 +15,16 @@ services:
       - rabbitmq
     volumes:
       - ./conf/devicecontrol/devicecontrol.conf:/opt/devicecontrol/devicecontrol.conf
+      - ./conf/profile.conf:/opt/devicecontrol/profile/profile.conf
       - ./conf/rabbitmq/client:/root/devicecontrol
+      - ./conf/devicecontrol/auth/server:/root/devicecontrolauth
+      - ./conf/data/devicecontrol/oauth:/root/oauth
     restart: always
   scanner:
     image: www.spoohapps.com/jble6lowpand
     volumes:
     - ./conf/jble6lowpand/jble6lowpand.conf:/opt/jble6lowpand/jble6lowpand.conf
-    - ./conf/jble6lowpand/data:/opt/jble6lowpand/data
+    - ./conf/data/jble6lowpand:/opt/jble6lowpand/data
     - /sys/kernel/debug/bluetooth/6lowpan_control:/opt/jble6lowpand/bin/6lowpan_control
     network_mode: host
     privileged: true
@@ -34,7 +37,8 @@ services:
       - rabbitmq
     volumes:
       - ./conf/jble6lowpanshoveld/jble6lowpanshoveld.conf:/opt/jble6lowpanshoveld/jble6lowpanshoveld.conf
-      - ./conf/jble6lowpanshoveld/profile.conf:/root/jble6lowpanshoveld/profile.conf
+      - ./conf/profile.conf:/root/jble6lowpanshoveld/profile.conf
+      - ./conf/rabbitmq/client:/root/jble6lowpanshoveld/client
     restart: always
   rabbitmq:
     image: www.spoohapps.com/rabbitmq-rpi
@@ -48,4 +52,20 @@ services:
       - ./conf/rabbitmq/server/cacert.pem:/etc/rabbitmq/cacert.pem
       - ./conf/rabbitmq/server/cert.pem:/etc/rabbitmq/cert.pem
       - ./conf/rabbitmq/server/key.pem:/etc/rabbitmq/key.pem
+    restart: always
+  couchdb:
+    image: treehouses/couchdb
+    ports:
+    - 5984:5984
+    volumes:
+    - ./conf/data/couchdb:/opt/couchdb/data
+    restart: always
+  redis:
+    image: redis:5
+    ports:
+    - 6379:6379
+    - 16379:16379
+    volumes:
+    - ./conf/data/redis:/data
+    entrypoint: redis-server --appendonly yes
     restart: always

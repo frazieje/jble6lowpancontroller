@@ -6,7 +6,6 @@ WORKDIR /home/gradle/src
 
 RUN gradle build -x test
 
-
 FROM resin/raspberry-pi-node:8 as nodebuilder
 
 COPY ./web /opt/jble6lowpancontroller
