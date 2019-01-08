@@ -4,15 +4,11 @@ services:
     build: .
     ports:
       - 80:8080
-    depends_on:
-      - scanner
     restart: always
   devicecontrol:
     image: www.spoohapps.com/devicecontrol-rpi
     ports:
       - 8080:8080
-    depends_on:
-      - rabbitmq
     volumes:
       - ./conf/devicecontrol/devicecontrol.conf:/opt/devicecontrol/devicecontrol.conf
       - ./conf/profile.conf:/opt/devicecontrol/profile/profile.conf
@@ -33,8 +29,6 @@ services:
     image: www.spoohapps.com/jble6lowpanshoveld-rpi
     ports:
       - 8081:8080
-    depends_on:
-      - rabbitmq
     volumes:
       - ./conf/jble6lowpanshoveld/jble6lowpanshoveld.conf:/opt/jble6lowpanshoveld/jble6lowpanshoveld.conf
       - ./conf/profile.conf:/root/jble6lowpanshoveld/profile.conf
