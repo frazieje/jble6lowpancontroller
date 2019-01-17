@@ -15,6 +15,7 @@ services:
       - ./conf/rabbitmq/client:/root/devicecontrol
       - ./conf/devicecontrol/auth/server:/root/devicecontrolauth
       - ./conf/data/devicecontrol/oauth:/root/oauth
+      - ./conf/data/jble6lowpand:/opt/jble6lowpand/data
     restart: always
   scanner:
     image: www.spoohapps.com/jble6lowpand
