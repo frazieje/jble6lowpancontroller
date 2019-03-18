@@ -9,6 +9,9 @@ services:
     image: www.spoohapps.com/devicecontrol-rpi
     ports:
       - 8080:8080
+      - 8443:8443
+      - 9443:9443
+      - 15984:15984
     volumes:
       - ./conf/devicecontrol/devicecontrol.conf:/opt/devicecontrol/devicecontrol.conf
       - ./conf/profile.conf:/opt/devicecontrol/profile/profile.conf
