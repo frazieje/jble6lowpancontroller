@@ -6,7 +6,7 @@ services:
       - 80:8080
     restart: always
   devicecontrol:
-    image: www.spoohapps.com/devicecontrol
+    image: www.spoohapps.com/devicecontrol-rpi
     ports:
       - 8080:8080
       - 8443:8443
@@ -23,14 +23,14 @@ services:
   scanner:
     image: www.spoohapps.com/jble6lowpand
     volumes:
-      - ./conf/jble6lowpand/jble6lowpand.conf:/opt/jble6lowpand/jble6lowpand.conf
-      - ./conf/data/jble6lowpand:/opt/jble6lowpand/data
-      - /sys/kernel/debug/bluetooth/6lowpan_control:/opt/jble6lowpand/bin/6lowpan_control
+    - ./conf/jble6lowpand/jble6lowpand.conf:/opt/jble6lowpand/jble6lowpand.conf
+    - ./conf/data/jble6lowpand:/opt/jble6lowpand/data
+    - /sys/kernel/debug/bluetooth/6lowpan_control:/opt/jble6lowpand/bin/6lowpan_control
     network_mode: host
     privileged: true
     restart: always
   shovel:
-    image: www.spoohapps.com/jble6lowpanshoveld
+    image: www.spoohapps.com/jble6lowpanshoveld-rpi
     ports:
       - 8081:8080
     volumes:
@@ -39,7 +39,7 @@ services:
       - ./conf/rabbitmq/client:/root/jble6lowpanshoveld/client
     restart: always
   rabbitmq:
-    image: www.spoohapps.com/rabbitmq
+    image: www.spoohapps.com/rabbitmq-rpi
     ports:
       - 15672:15672
       - 5671:5671
@@ -55,18 +55,18 @@ services:
       - ./conf/data/rabbitmq:/var/lib/rabbitmq
     restart: always
   couchdb:
-    image: couchdb:2
+    image: treehouses/couchdb
     ports:
-      - 5984:5984
+    - 5984:5984
     volumes:
-      - ./conf/data/couchdb:/opt/couchdb/data
+    - ./conf/data/couchdb:/opt/couchdb/data
     restart: always
   redis:
     image: redis:5
     ports:
-      - 6379:6379
-      - 16379:16379
+    - 6379:6379
+    - 16379:16379
     volumes:
-      - ./conf/data/redis:/data
+    - ./conf/data/redis:/data
     entrypoint: redis-server --appendonly yes
     restart: always
