@@ -1,4 +1,4 @@
-FROM gradle:jdk8 as javabuilder
+FROM arm32v7/gradle:jdk8 as javabuilder
 
 COPY --chown=gradle:gradle . /home/gradle/src
 
@@ -6,7 +6,7 @@ WORKDIR /home/gradle/src
 
 RUN gradle build -x test
 
-FROM resin/raspberry-pi-node:8 as nodebuilder
+FROM arm32v7/node:8 as nodebuilder
 
 COPY ./web /opt/jble6lowpancontroller
 
@@ -17,7 +17,7 @@ RUN npm install && \
 
 RUN node build/build.js
 
-FROM resin/raspberry-pi-openjdk:8-jdk
+FROM balenalib/raspberry-pi-openjdk:8-jdk
 
 COPY --from=javabuilder /home/gradle/src/build/distributions/jble6lowpancontroller.tar /opt/
 
